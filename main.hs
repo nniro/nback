@@ -194,24 +194,28 @@ preRound gType level permutations delay = do
 	putStrLn $ show gType ++ " " ++ show level ++ "-Back, " ++ show permutations ++ " permutations"
 	putStrLn $ "Delay : " ++ show delay
 	putStrLn []
-	putStrLn $ case gType of
-		(Audio _) -> 	"The goal of this training is to practice short term memory.\n"
+	putStrLn ("The goal of this training is to practice short term memory.\n"
 				++ "To do this, within " ++ show permutations ++ " permutations \n"
 				++ "you must detect duplications that were exactly\n"
-				++ "on the past " ++ show level ++ " permutation" ++ (if level > 1 then "s" else [])
+				++ "on the past " ++ show level ++ " permutation" ++ (if level > 1 then "s" else []) ++ " (inclusive) "
 				++ "from the current permutation.\n"
-
---				++ "To do this, we will present you with " ++ show permutations ++ " permutations"
---				++ "and you must detect any sounds that have been duplicated from the exact " ++ show level ++ " past sounds."
-				
-				++ "\n"
-				++ "During the round, when you think there is a\n"
+				++ "Example, on 2-back, you have n - k - n, which is a match.\n"
+				++ "on 3-back, you have : n - k - l - n, which is a match.\n"
+				++ "etc."
+		)
+	putStrLn []
+	putStrLn $ case gType of
+		(Audio _) -> "During the round, when you think there is a\n"
 				++ "sound that was played back in the correct sequence, just press any key.\n"
 				++ "Otherwise, don't press anything\n"
-		(Position _) -> []
-		(Dual _) -> []
---	putStrLn "During the round, when you think there is a"
---	putStrLn "right entry, simply press any key to add it."
+		(Position _) -> "During the round, when you think there is a\n"
+				++ "position that was back in the correct sequence, just press any key.\n"
+				++ "Otherwise, don't press anything\n"
+		(Dual _) -> "During the round, when you think there is a\n"
+				++ "position or/and a sound that was back in the correct sequence\n"
+				++ "you have to press `l' (location) for the position and `a' (audio) for the sound.\n"
+				++ "It is possible that both are at the same time.\n"
+				++ "Otherwise, don't press anything\n"
 	putStrLn "Your result will be shown after the round."
 	putStrLn []
 	putStrLn "Press Any Key to Continue"
