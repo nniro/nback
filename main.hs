@@ -133,9 +133,9 @@ instance Binary GameType where
 	get = do
 		w <- getWord8
 		case w of
-			1 -> return $ Audio undefined -- liftM Audio get
-			2 -> return $ Position undefined -- liftM Position get
-			3 -> return $ Dual undefined -- liftM Dual get
+			1 -> return $ Audio undefined
+			2 -> return $ Position undefined
+			3 -> return $ Dual undefined
 
 data GameConfig = GameConfig {
 	gameType :: GameType
@@ -259,7 +259,6 @@ purgeStdin = do
 		then getChar >> purgeStdin
 		else return ()
 
-
 nbackRound _ (Audio []) result = return result
 nbackRound _ (Position []) result = return result
 nbackRound _ (Dual []) result = return result
@@ -329,8 +328,6 @@ nbackRound delay lst result = do
 percent :: Int -> Int -> Rational
 percent a b = (toRational a / toRational b) * 100
 
--- [(String, Int)]  [Int] [((String, Int), Int)]
-
 -- generates a round which has a proper, minimum amount
 -- of entries.
 genProperRound :: GameType -> Int -> Int -> Int -> IO GameType
@@ -371,16 +368,12 @@ execRound gType level permutations delay = do
 	putStrLn "The round has started!"
 	round <- genProperRound gType level permutations 2
 
---	putStrLn $ show round
---	putStrLn $ show $ solveRound nbackLevel $ map snd round
 	sTime <- getCurrentTime
 
 	-- This is the core of the round
 	result <- nbackRound delay round None
 
 	eTime <- result `seq` getCurrentTime
-----	let goodAttempts = foldl (\a (b, c) -> a + if b == c && b == True then 1 else 0) 0 (result `zip` (gameHigh round giveSolve))
-	--let goodAttempts = fmap () . (result `zip`) . giveSolve) round
 
 	let interim = fOutputs zip result (gameHigh round giveSolve)
 	let goodAttempts = fmap (foldl (\a (b, c) -> a + if b == c && b == True then 1 else 0) 0) interim
@@ -390,15 +383,12 @@ execRound gType level permutations delay = do
 
 	putStrLn ("round time : " ++ show (diffUTCTime eTime sTime))
 	putStrLn ("result for " ++ show attempts ++ " attempts : " ++ show goodAttempts ++ " good " ++ show badAttempts ++ " bad")
---	putStrLn $ "\t" ++ (++ "%") (show (fmap fromEnum (fmap (`percent` permutations) (fOutputs (-) (fmap (permutations -) badAttempts) goodAttempts))))
 	putStrLn $ "\t" ++ (++ "%") (show (fmap fromEnum (fmap (`percent` permutations) rightAnswers)))
 
 	putStrLn $ "User debug :\t\t" ++ show result
 	putStrLn $ "Correct answer :\t" ++ show (gameHigh round giveSolve)
 
 	return $ fmap (`percent` permutations) rightAnswers
---	return $ fmap (`percent` permutations) (fOutputs (-) (fmap (permutations -) badAttempts) goodAttempts)
---	return $ ((permutations - badAnswers) - goodAnswers) `percent` permutations
 	where	giveSolve = solveRound2 level
 
 changeConfig config = do
@@ -471,7 +461,6 @@ changeConfig config = do
 				'p' -> return (Position undefined)
 				'd' -> return (Dual undefined)
 				_ -> putStrLn ("Incorrect command `" ++ [c] ++ "\'") >> threadDelay 1000000 >> gameTypeSetting value 
-
 
 mainMenu config = do
 	home <- getHomeDirectory
