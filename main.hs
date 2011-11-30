@@ -265,7 +265,7 @@ nbackRound _ (Dual []) result = return result
 nbackRound delay lst result = do
 	let output = case lst of 
 			(Dual _) -> Complex (False, False)
-			_ -> Simple undefined
+			_ -> Simple False
 	let properResult = case result of
 				None -> case lst of
 						(Dual _) -> Complex ([], [])
@@ -297,9 +297,9 @@ nbackRound delay lst result = do
 	putStrLn $ show result'
 
 	inputAvail <- hWaitForInput stdin delay'
-	result' <- handleInput result'
+	result2 <- handleInput result'
 
-	putStrLn $ show result'
+	putStrLn $ show result2
 
 	eTime <- getCurrentTime
 	let diffTime = diffUTCTime eTime sTime
@@ -307,12 +307,12 @@ nbackRound delay lst result = do
 		then threadDelay $ fromEnum $ ((fromRational delay) - diffTime) / (10 ^ 6)
 		else return ()
 		)
-	nbackRound delay next (properResult `addLstOutputs` fmap (: []) result')
-	where	handleInput (Simple _) = do
+	nbackRound delay next (properResult `addLstOutputs` fmap (: []) result2)
+	where	handleInput (Simple result) = do
 			inputAvail <- hReady stdin
 			if inputAvail
 				then getChar >> return (Simple True)
-				else return $ Simple False
+				else return $ Simple result 
 		handleInput (Complex result) = do
 			inputAvail <- hReady stdin
 			if inputAvail
