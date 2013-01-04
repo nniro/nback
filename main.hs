@@ -407,10 +407,10 @@ execRound gType level permutations delay = do
 	let rightAnswers = fmap (foldl (\a (b, c) -> a + if b == c then 1 else 0) 0) interim
 
 	putStrLn ("round time : " ++ show (diffUTCTime eTime sTime))
-	putStrLn ("result for " ++ show attempts ++ " attempts : " ++ show goodAttempts ++ " good " ++ show badAttempts ++ " bad")
+	putStr ("result for " ++ show attempts ++ " attempts : " ++ show goodAttempts ++ " good " ++ show badAttempts ++ " bad")
 	putStrLn $ "\t" ++ (++ "%") (show (fmap fromEnum (fmap (`percent` permutations) rightAnswers)))
 
-	putStrLn $ "User debug :\t\t" ++ show result
+	putStrLn $ "User input :\t\t" ++ show result
 	putStrLn $ "Correct answer :\t" ++ show (gameHigh round giveSolve)
 
 	return $ fmap (`percent` permutations) rightAnswers
