@@ -233,7 +233,7 @@ preRound gType level permutations delay = do
 				++ "position that was back in the correct sequence, just press any key.\n"
 				++ "Otherwise, don't press anything\n"
 		(Dual _) -> "During the round, when you think there is a\n"
-				++ "position or/and a sound that was back in the correct sequence\n"
+				++ "position and/or sound that was back in the correct sequence\n"
 				++ "you have to press `l' (location) for the position and `a' (audio) for the sound.\n"
 				++ "It is possible that both are at the same time.\n"
 				++ "Otherwise, don't press anything\n"
