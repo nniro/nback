@@ -390,11 +390,15 @@ execRound :: GameType -> Int -> Int -> Rational -> IO (Outputs Rational)
 execRound gType level permutations delay = do
 	preRound gType level permutations delay
 	runCommand "clear" >>= waitForProcess
-	putStrLn "The round has started!"
+	--putStrLn "The round has started!"
 	round <- genProperRound gType level permutations 2
 
+	-- empty grid shown to start with
+	putStrLn "\n\n\n\n\n"
+	putStrLn $ positionGrid 0 "\t\t\t\t\t\t"
+	threadDelay 1000000 -- 1 second delay to make the game's start less abrupt
 	sTime <- getCurrentTime
-
+	
 	-- This is the core of the round
 	result <- nbackRound delay round None
 
