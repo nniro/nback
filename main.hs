@@ -124,9 +124,14 @@ gameHigh (Dual lst) f = Complex (f (map (snd . fst) lst), f (map snd lst))
 --						nbackLevel
 --							perRoundAmount
 --								percent
-data Stats = Stats	GameType	UTCTime	Int	Int	(Outputs Rational)
+data Stats = Stats	GameType	LocalTime	
+						Int	Int	(Outputs Rational)
 
 instance Binary UTCTime where
+	put a = put $ show a
+	get = liftM read get
+
+instance Binary LocalTime where
 	put a = put $ show a
 	get = liftM read get
 
@@ -513,10 +518,12 @@ mainMenu config = do
 		's' -> do
 			result <- execRound (gameType config) (gameLevel config) (gameRoundAmount config) (gameDelay config)
 			cTime <- result `seq` getCurrentTime
+			tz <- getCurrentTimeZone
+			let locTime = utcToLocalTime tz cTime
 			putStrLn "Press any Key to Continue"
 			purgeStdin >> getChar
-			B.writeFile (home ++ dataPath) $ runPut $ put $ config {gameStats= (createStat cTime config result) : gameStats config}
-			mainMenu $ config {gameStats= (createStat cTime config result) : gameStats config}
+			B.writeFile (home ++ dataPath) $ runPut $ put $ config {gameStats= (createStat locTime config result) : gameStats config}
+			mainMenu $ config {gameStats= (createStat locTime config result) : gameStats config}
 		'g' -> do
 			putStrLn $ positionGrid 0 "\t\t\t\t\t\t"
 			putStrLn []
