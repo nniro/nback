@@ -287,7 +287,7 @@ nbackRound delay lst result = do
 	inputAvail <- hWaitForInput stdin delay'
 	result' <- handleInput output
 
-	putStrLn $ show result'
+	--putStrLn $ show result'
 	eTime <- getCurrentTime
 	let diffTime = diffUTCTime eTime sTime
 	(if diffTime < fromRational (delay / 2)
@@ -298,12 +298,12 @@ nbackRound delay lst result = do
 	putStrLn "\n\n\n\n\n"
 	putStrLn $ positionGrid 0 "\t\t\t\t\t\t"
 
-	putStrLn $ show result'
+	--putStrLn $ show result'
 
 	inputAvail <- hWaitForInput stdin delay'
 	result2 <- handleInput result'
 
-	putStrLn $ show result2
+	--putStrLn $ show result2
 
 	eTime <- getCurrentTime
 	let diffTime = diffUTCTime eTime sTime
