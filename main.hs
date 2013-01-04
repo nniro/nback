@@ -1,4 +1,4 @@
-{-# Language ViewPatterns #-}
+{-# Language ViewPatterns, FlexibleInstances #-}
 
 import Control.Monad
 import Control.Arrow
@@ -64,9 +64,30 @@ nr a b = if null a then [] else a ++ b
 data Outputs a = Simple a | Complex (a, a) | None
 	deriving (Ord, Eq)
 
-instance Show a => Show (Outputs a) where
+{-instance Show a => Show (Outputs a) where
 	show (Simple a) = show a
 	show (Complex (a, b)) = "(" ++ show a ++ ", " ++ show b ++ ")"
+-}
+
+instance Show (Outputs Bool) where
+	show (Simple a) = bool2StrInt a
+	show (Complex (a, b)) = "(" ++ bool2StrInt a ++ ", " ++ bool2StrInt b ++ ")"
+
+instance Show (Outputs [Bool]) where
+	show (Simple a) = foldl (\a b -> nr a "," ++ (show . Simple) b) [] a
+	show (Complex a) = (foldl (\a b -> nr a "," ++ (show . Complex) b) [] . uncurry zip) a
+
+instance Show (Outputs Int) where
+	show (Simple a) = show a
+	show (Complex (a, b)) = "(" ++ show a ++ ", " ++ show b ++ ")"
+
+instance Show (Outputs String) where
+	show (Simple a) = show a
+	show (Complex (a, b)) = "(" ++ show a ++ ", " ++ show b ++ ")"
+
+bool2StrInt :: Bool -> String
+bool2StrInt True = "1"
+bool2StrInt False = "0"
 
 instance Functor Outputs where
 	fmap f (Simple a) = Simple $ f a
